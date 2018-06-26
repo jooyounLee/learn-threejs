@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <script src="./three.js-master/build/three.min.js"></script>
+    </head>
+    <body>
+        <a href="./earth.html">earth</a><br/>
+        <a href="./bookEx.html">책예제</a>
+    </body>
+    <script>
+        window.onload = function () {
+            const VIEW_ANGLE = 70
+            const ASPECT = 100 / 100
+            const NEAR = 0.1
+            const FAR = 500
+
+            // 컴퓨터의 3차원 수식을 우리가 볼 수 있는 형태로 바꾸는 기능. canvas태그
+            var renderer = new THREE.WebGLRenderer()
+            // renderer 사이즈 설정
+            renderer.setSize(800, 600)
+            // 만든 renderer를 body안에 붙인다.
+            document.body.appendChild(renderer.domElement)
+
+            // scene : 세계(world) scene에 mesh와 light를 add
+            var scene = new THREE.Scene()
+
+            // PerspectiveCamera : 원근법 적용, OrthographicCamera : 원근법 미적용
+            var camera = new THREE.PerspectiveCamera(
+                VIEW_ANGLE, // angle : 시야각 (일반적으로 45~75도)
+                ASPECT, // 화면의 비율을 나타냄 (보통 width/height로 사용)
+                NEAR, // 물체를 얼마나 가까이 있는것까지 볼것인가
+                FAR // 물체를 얼마나 멀리 있는것까지 볼것인가
+            )
+
+            camera.position.set(0, 30, 30)
+            camera.lookAt(scene.position)
+
+            // mesh객체의 형태
+            var geometry = new THREE.BoxGeometry(10, 10, 10) 
+
+            // mesh객체의 색상
+            var meterial = new THREE.MeshLambertMaterial({color: 0xFF0000})
+            
+            // 객체 (geometry객체와 meterial객체가 필요하다)
+            var mesh = new THREE.Mesh(geometry, meterial)
+
+            scene.add(mesh)
+
+            // 빛
+            var light = new THREE.PointLight(0xFFFF00)
+            light.position.set(20, 10, 40)
+            scene.add(light)
+
+            renderer.setClearColor(0xdddddd, 1)
+            var loop = function () {
+                mesh.rotation.x += 0.1
+                mesh.rotation.y += 0.02
+                mesh.rotation.z += 0.02
+
+                // render() 메소드를 실행해 화면에 그린다. 필수
+                renderer.render(scene, camera)
+
+                // 회전시킬 loop 함수를 재귀적으로 계속 호출시킴
+                requestAnimationFrame(loop)
+            }
+            // requestAnimationFrame: Window객체의 함수, WebGL의 지원과 함께 제공됨.
+            // 지정된 연산(함수)의 호출을 다른연산에 방해를 주지않고 최대한 빨리 호출해주는 함수.
+            requestAnimationFrame(loop)
+            
+        }
+    </script>
+</html>
